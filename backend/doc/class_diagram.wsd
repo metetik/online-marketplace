@@ -1,0 +1,28 @@
+@startuml
+
+class User {
+	-int id
+	-String name
+	-String password
+}
+
+class Role {
+	-int id
+	-String name
+}
+
+class Product {
+	-int id
+	-String name
+}
+
+class Seller {
+	-int id
+	-String name
+}
+
+User "many" *-- "1" Role
+User "many" o-- "many" Product : favoriteList
+User "many" o-- "many" Seller : blackList
+
+@enduml
