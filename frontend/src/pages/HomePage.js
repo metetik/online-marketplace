@@ -1,30 +1,19 @@
-import React, {useEffect, useState} from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+// Everyone can see
+import React, {useEffect} from 'react';
 import AuthService from "../service/AuthService";
 
 const HomePage = () => {
-	const [username, setUsername] = useState("");
-
+	const user = AuthService.getCurrentUser();
 	useEffect(() => {
-		const userObject = AuthService.getCurrentUser();
-
-		if (userObject) {
-			setUsername(userObject.username);
-		}
-	},[username])
-
+		window.scrollTo(0, 0);
+	}, [])
 
 	return (
 		<div>
-			<Container className="Content">
-				<Row className="justify-content-md-center">
-					<Col xs={8}>
-						<h2>Welcome {username}</h2>
-					</Col>
-				</Row>
-			</Container>
+			<h1>Homepage</h1>
+			<h2>Welcome, {user && user.username}</h2>
 		</div>
-	)
-}
+	);
+};
 
-export default HomePage
+export default HomePage;

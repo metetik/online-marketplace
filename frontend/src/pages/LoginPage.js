@@ -1,62 +1,119 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import React, {useEffect, useState} from 'react';
+import {useFormik} from "formik";
+import * as Yup from "yup";
+import {useHistory} from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import AuthService from "../service/AuthService";
 
 const LoginPage = () => {
-	const [credentials, setCredentials] = useState({});
+	const initialValues = {username : "", password : ""}
+	const schema = Yup.object({
+		username : Yup.string().required("No username provided."),
+		password : Yup.string()
+			.required('No password provided.')
+			// .min(8, 'Password is too short - should be 8 chars minimum.')
+
+	})
+
+	const notify = (success) => {
+		success ?
+		toast.success('Login is successful!', {
+			position: "bottom-right",
+			autoClose: 1500,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: false,
+			draggable: true,
+			progress: undefined,
+			pauseOnFocusLoss: false
+		})
+		:
+		toast.error('Login failed!', {
+			position: "bottom-right",
+			autoClose: 1500,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: false,
+			draggable: true,
+			progress: undefined,
+			pauseOnFocusLoss: false
+		});
+	}
 
 	const history = useHistory();
 
+	const sleep = (milliseconds) => {
+		return new Promise(resolve => setTimeout(resolve, milliseconds))
+	}
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
+	const handleSubmit = async (values, actions) => {
+		actions.resetForm();
 
-		const form = event.currentTarget;
+		const response = await AuthService.signin(values);
 
-		// form is valid
-		if (form.checkValidity() === true) {
-			const response = await AuthService.signin(credentials);
-
-			//use effect => listen token
-			if (response) {
-				history.push("/home");
-			}
+		if (response) {
+			notify(true);
+			await sleep(1500);
+			history.push("/");
+		}
+		else {
+			notify(false);
 		}
 
-		// setValidated(true);
-	};
 
-	// change credential values when inputs change
-	const handleChange = (event) => {
-		setCredentials({...credentials, [event.target.name] : event.target.value});
-	};
+	}
+
+	const formik = useFormik(
+		{initialValues : initialValues,
+		validationSchema : schema,
+		onSubmit : (async (values, actions) => handleSubmit(values, actions))},
+		)
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [])
+
 
 	return (
 		<div>
-			<Container className="Content">
-				<Row className="justify-content-md-center">
-					<Col xs={6}>
-						<Form onSubmit={handleSubmit}>
-							<Form.Group className="mb-3" controlId="formBasicUsername">
-								<Form.Label>Username</Form.Label>
-								<Form.Control name="username" placeholder="Enter username" onChange={handleChange} required/>
-								<Form.Control.Feedback type="invalid">Username is required.</Form.Control.Feedback>
-							</Form.Group>
+			<h1>Login Page</h1>
+			<form className="ui form" onSubmit={formik.handleSubmit}>
+				<div className="field">
+					<label>Username</label>
+					<input
+					type="text"
+					name="username"
+					placeholder="Username"
+					onChange={formik.handleChange}
+					value={formik.values.username}/>
 
-							<Form.Group className="mb-3" controlId="formBasicPassword">
-								<Form.Label>Password</Form.Label>
-								<Form.Control name="password" type="password" placeholder="Password" onChange={handleChange} required />
-								<Form.Control.Feedback type="invalid">Password is required.</Form.Control.Feedback>
-							</Form.Group>
-
-							<Button variant="primary" type="submit">
-								Submit
-							</Button>
-						</Form>
-					</Col>
-				</Row>
-			</Container>
+					{formik.errors.username &&
+					<div className="ui pointing red basic label">
+						{formik.errors.username}</div>
+					}
+				</div>
+				<div className="field">
+					<label>Password</label>
+					<input
+					type="password"
+					name="password"
+					placeholder="Password"
+					onChange={formik.handleChange}
+					value={formik.values.password}/>
+					{formik.errors.password &&
+					<div className="ui pointing red basic label">
+						{formik.errors.password}</div>
+					}
+				</div>
+				<button className="ui primary basic button" type="submit">Login</button>
+			</form>
+			<ToastContainer position="bottom-right"
+							autoClose={5000}
+							hideProgressBar={false}
+							newestOnTop={false}
+							closeOnClick
+							rtl={false}
+							draggable/>
 		</div>
 	);
 };
