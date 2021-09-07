@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter, Redirect, Route, Switch, useHistory} from "react-router-dom";
 import AuthService from "./service/AuthService";
 import NavBar from "./layouts/NavBar";
 import 'semantic-ui-css/semantic.min.css';
@@ -9,23 +8,10 @@ import UsersPage from "./pages/UsersPage";
 import FavoriteListPage from "./pages/FavoriteListPage";
 import {Container} from "semantic-ui-react";
 import LoginPage from "./pages/LoginPage";
+import {useDispatch, useSelector} from "react-redux";
+import {clearUser} from "./store/actions/userActions";
 
 const App = () => {
-	const [currentUser, setCurrentUser] = useState(undefined);
-
-	useEffect(() => {
-		const userObject = AuthService.getCurrentUser();
-
-		if (userObject) {
-			setCurrentUser(userObject);
-
-		}
-	}, []);
-
-	const logout = (event) => {
-		AuthService.logout();
-	};
-
 	return (
 		<div className="App">
 			<BrowserRouter>
@@ -50,6 +36,9 @@ const App = () => {
 						<Route path="/login">
 							<LoginPage />
 						</Route>
+						<Route path="/logout">
+							<LoginPage />
+						</Route >
 					</Switch>
 				</Container>
 			</BrowserRouter>

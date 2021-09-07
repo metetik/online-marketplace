@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useHistory} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import AuthService from "../service/AuthService";
+import {setUser} from "../store/actions/userActions";
+import {useDispatch} from "react-redux";
 
 const LoginPage = () => {
 	const initialValues = {username : "", password : ""}
+	const dispatch = useDispatch();
 	const schema = Yup.object({
 		username : Yup.string().required("No username provided."),
 		password : Yup.string()
@@ -53,14 +56,19 @@ const LoginPage = () => {
 
 		if (response) {
 			notify(true);
+			const currentUser = AuthService.getCurrentUser();
+			const userObject = {username : currentUser.username,
+				role : currentUser.roles[0]};
+
+			if (userObject) {
+				dispatch(setUser(userObject));
+			}
 			await sleep(1500);
 			history.push("/");
 		}
 		else {
 			notify(false);
 		}
-
-
 	}
 
 	const formik = useFormik(

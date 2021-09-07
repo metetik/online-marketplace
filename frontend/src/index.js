@@ -4,10 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'react-toastify/dist/ReactToastify.min.css';
+import {Provider} from "react-redux";
+import configureStore from "./store/configureStore";
+import {PersistGate} from "redux-persist/integration/react";
+
+let {store, persistor} =  configureStore();
 
 ReactDOM.render(
 	<div>
-		<App />
+		<Provider store={store}>
+			<PersistGate loading={null} persistor={persistor}>
+				<App />
+			</PersistGate>
+		</Provider>
 	</div>,
 	document.getElementById('root')
 );
