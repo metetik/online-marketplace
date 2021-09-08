@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import tr.com.obss.jss.jss_final_project.model.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
@@ -12,10 +13,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findAll();
 
     @Override
-    Product getById(Integer id);
+    Optional<Product> findById(Integer id);
 
     @Override
     Product save(Product product);
-
-
 }

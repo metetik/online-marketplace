@@ -1,7 +1,11 @@
 // Only admin can see
-import React from 'react';
+import React, {useEffect} from 'react';
 
 const UsersPage = () => {
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	});
 
 	return (
 		<div>

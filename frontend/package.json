@@ -1,5 +1,5 @@
 {
-	"name": "online-marketplace/frontend",
+	"name": "online-marketplace-frontend",
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
@@ -7,11 +7,10 @@
 		"@testing-library/react": "^11.2.7",
 		"@testing-library/user-event": "^12.8.3",
 		"axios": "^0.21.1",
-		"bootstrap": "^5.1.0",
 		"formik": "^2.2.9",
+		"http-status-codes": "^2.1.4",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
-		"react-icons": "^4.2.0",
 		"react-redux": "^7.2.5",
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "4.0.3",

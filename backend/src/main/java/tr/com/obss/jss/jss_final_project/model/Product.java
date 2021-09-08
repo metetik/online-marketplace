@@ -15,4 +15,11 @@ public class Product {
     private Integer id;
 
     private String name;
+
+    @ManyToOne(cascade = {CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.DETACH,
+            CascadeType.REFRESH })
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 }

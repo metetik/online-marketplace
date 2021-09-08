@@ -1,8 +1,10 @@
 // Only users can see
-
-import React from 'react';
+import React, {useEffect} from 'react';
 
 const FavoriteListPage = () => {
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	});
 
 	return (
 		<div>

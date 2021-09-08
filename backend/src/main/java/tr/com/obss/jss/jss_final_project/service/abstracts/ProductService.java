@@ -7,5 +7,7 @@ import java.util.List;
 public interface ProductService {
     List<Product> findAll();
 
+    List<Product> findAll(int pageNo, int pageSize);
+
     Product getProductById(Integer id);
 }

@@ -1,15 +1,20 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {useHistory} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import AuthService from "../service/AuthService";
 import {setUser} from "../store/actions/userActions";
 import {useDispatch} from "react-redux";
+import {Message} from "semantic-ui-react";
 
 const LoginPage = () => {
+	const [authError, setAuthError] = useState(false);
 	const initialValues = {username : "", password : ""}
 	const dispatch = useDispatch();
+	const location = useLocation();
+	const history = useHistory();
+
 	const schema = Yup.object({
 		username : Yup.string().required("No username provided."),
 		password : Yup.string()
@@ -42,8 +47,6 @@ const LoginPage = () => {
 			pauseOnFocusLoss: false
 		});
 	}
-
-	const history = useHistory();
 
 	const sleep = (milliseconds) => {
 		return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -79,12 +82,21 @@ const LoginPage = () => {
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
+
+		if (location.state){
+			setAuthError(location.state);
+		}
 	}, [])
 
 
 	return (
 		<div>
 			<h1>Login Page</h1>
+			{authError &&
+			<Message warning>
+				You must login to access this page!
+			</Message>}
+
 			<form className="ui form" onSubmit={formik.handleSubmit}>
 				<div className="field">
 					<label>Username</label>

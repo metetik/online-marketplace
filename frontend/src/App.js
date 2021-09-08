@@ -1,5 +1,4 @@
-import {BrowserRouter, Redirect, Route, Switch, useHistory} from "react-router-dom";
-import AuthService from "./service/AuthService";
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import NavBar from "./layouts/NavBar";
 import 'semantic-ui-css/semantic.min.css';
 import HomePage from "./pages/HomePage";
@@ -8,8 +7,7 @@ import UsersPage from "./pages/UsersPage";
 import FavoriteListPage from "./pages/FavoriteListPage";
 import {Container} from "semantic-ui-react";
 import LoginPage from "./pages/LoginPage";
-import {useDispatch, useSelector} from "react-redux";
-import {clearUser} from "./store/actions/userActions";
+import ProductPage from "./pages/ProductPage";
 
 const App = () => {
 	return (
@@ -26,6 +24,9 @@ const App = () => {
 						</Route>
 						<Route path="/products">
 							<ProductsPage />
+						</Route>
+						<Route path={"/product/:id"}>
+							<ProductPage />
 						</Route>
 						<Route path="/users">
 							<UsersPage />
