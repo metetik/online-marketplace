@@ -23,6 +23,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
+    }
+
     public  Boolean existsByUsername(String username){
         return userRepository.existsByUsername(username);
     }

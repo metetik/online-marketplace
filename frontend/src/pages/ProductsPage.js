@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import ProductsService from "../service/ProductsService";
 import {Link, useHistory} from "react-router-dom";
-import {Button, Card, Container, Grid, Pagination} from "semantic-ui-react";
+import {Button, Card, Container, Grid, Icon, Pagination} from "semantic-ui-react";
 
 const ProductsPage = () => {
 	const [products, setProducts] = useState([]);
@@ -23,6 +23,10 @@ const ProductsPage = () => {
 			});
 	}
 
+	const handleFavoriteList = (productId) => {
+		ProductsService.addToFavorites(productId)
+	}
+
 	useEffect( () => {
 		getProducts(activePage,pageSize)
 		window.scrollTo(0, 0);
@@ -37,23 +41,19 @@ const ProductsPage = () => {
 			<h1>Products Page</h1>
 			<Grid columns={3}>
 			{!!products && products.map((product) =>(
-
 						<Grid.Column key={product.id}>
-							<Card>
+							<Card fluid>
 								<Card.Content as={Link} to={`/product/${product.id}`}>
-									{/*<Link ></Link>*/}
 									<Card.Header>{product.name}</Card.Header>
-									<Card.Meta>{product.seller.name}</Card.Meta>
-									{/*<Card.Description>*/}
-									{/*	Steve wants to add you to the group <strong>best friends</strong>*/}
-									{/*</Card.Description>*/}
+									<Card.Meta>{product.seller?.name}</Card.Meta>
 								</Card.Content>
 								<Card.Content extra>
-									<Button basic color='green'>
-										Approve
-									</Button>
-									<Button basic color='red'>
-										Decline
+									<Button basic compact color='red' onClick={() => handleFavoriteList(product.id)}>
+										<Icon.Group>
+											<Icon name='heart outline' />
+											<Icon corner name='add' />
+										</Icon.Group>
+										Add to favorites
 									</Button>
 								</Card.Content>
 							</Card>

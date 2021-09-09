@@ -37,10 +37,38 @@ const ProductService = (function () {
 		}
 	};
 
+	const _addToFavorites = async (id) => {
+		try {
+			const response = await axios.get("/api/favorite-list/add", { headers : authHeader(), params : {"id" : id}});
+			console.log("resp : " + response);
+
+			return response;
+		} catch (error) {
+			console.log("err : " + error);
+
+			return error.response;
+		}
+	};
+
+	const _addToBlackList = async (id) => {
+		try {
+			const response = await axios.get("/api/black-list/add", { headers : authHeader(), params : {"id" : id}});
+			console.log("resp : " + response);
+
+			return response;
+		} catch (error) {
+			console.log("err : " + error);
+
+			return error.response;
+		}
+	};
+
 	return {
 		getAll : _getAll,
 		getAllByPage : _getAllByPage,
-		getById : _getById
+		getById : _getById,
+		addToFavorites : _addToFavorites,
+		addToBlackList : _addToBlackList
 	};
 })();
 

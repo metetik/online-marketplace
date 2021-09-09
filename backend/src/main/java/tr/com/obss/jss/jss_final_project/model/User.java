@@ -44,4 +44,20 @@ public class User {
         this.username = username;
         this.password = password;
     }
+
+    public void addToFavoriteList(Product product) {
+        favoriteList.add(product);
+    }
+
+    public void addToBlackList(Seller seller) {
+        blackList.add(seller);
+    }
+
+    public boolean isFavoriteListContainsProduct(Product product) {
+        return favoriteList.contains(product);
+    }
+
+    public boolean isBlackListContainsSeller(Seller seller) {
+        return blackList.contains(seller);
+    }
 }
