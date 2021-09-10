@@ -1,7 +1,10 @@
 package tr.com.obss.jss.jss_final_project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import tr.com.obss.jss.jss_final_project.model.Product;
+import tr.com.obss.jss.jss_final_project.model.Seller;
 import tr.com.obss.jss.jss_final_project.model.User;
 
 import java.util.List;
@@ -18,5 +21,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void deleteById(String id);
 
     List<User> findAll();
-
 }

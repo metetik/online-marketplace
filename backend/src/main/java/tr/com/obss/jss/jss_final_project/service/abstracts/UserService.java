@@ -1,5 +1,6 @@
 package tr.com.obss.jss.jss_final_project.service.abstracts;
 
+import tr.com.obss.jss.jss_final_project.model.Seller;
 import tr.com.obss.jss.jss_final_project.model.User;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Optional;
 public interface UserService {
    Optional<User> findByUsername(String username);
 
-   Optional<User> findById(Integer id);
+   User getById(Integer id);
 
    Boolean existsByUsername(String username);
 

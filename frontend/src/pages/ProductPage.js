@@ -3,7 +3,8 @@ import React, {useEffect, useState} from 'react';
 import ProductService from "../service/ProductsService";
 import {Link, useLocation, useParams} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
-import {Button, Card, Icon} from "semantic-ui-react";
+import {Button, Card, Divider, Icon} from "semantic-ui-react";
+import toastify from "../util/ToastifyUtil";
 
 const ProductPage = () => {
 	const {id} = useParams();
@@ -24,10 +25,12 @@ const ProductPage = () => {
 
 	const handleBlackList = (sellerId) => {
 		ProductService.addToBlackList(sellerId);
+		toastify(" ", "Seller added to black list")
 	}
 
 	const handleFavoriteList = (productId) => {
 		ProductService.addToFavorites(productId);
+		toastify(" ", "Product added to favorites")
 	}
 
 	useEffect(() => {
@@ -39,6 +42,7 @@ const ProductPage = () => {
 	return (
 		<div>
 			<h1>Product</h1>
+			<Divider/>
 			<Card fluid>
 				<Card.Content>
 					<Card.Header>{product.name}</Card.Header>

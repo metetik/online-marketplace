@@ -7,6 +7,7 @@ import AuthService from "../service/AuthService";
 import {setUser} from "../store/actions/userActions";
 import {useDispatch} from "react-redux";
 import {Message} from "semantic-ui-react";
+import toastify from "../util/ToastifyUtil";
 
 const LoginPage = () => {
 	const [authError, setAuthError] = useState(false);
@@ -25,27 +26,8 @@ const LoginPage = () => {
 
 	const notify = (success) => {
 		success ?
-		toast.success('Login is successful!', {
-			position: "bottom-right",
-			autoClose: 1500,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: false,
-			draggable: true,
-			progress: undefined,
-			pauseOnFocusLoss: false
-		})
-		:
-		toast.error('Login failed!', {
-			position: "bottom-right",
-			autoClose: 1500,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: false,
-			draggable: true,
-			progress: undefined,
-			pauseOnFocusLoss: false
-		});
+		toastify("success", "Login is Successful!")
+		: toastify("error", "Login Failed!");
 	}
 
 	const sleep = (milliseconds) => {
@@ -127,13 +109,6 @@ const LoginPage = () => {
 				</div>
 				<button className="ui primary basic button" type="submit">Login</button>
 			</form>
-			<ToastContainer position="bottom-right"
-							autoClose={5000}
-							hideProgressBar={false}
-							newestOnTop={false}
-							closeOnClick
-							rtl={false}
-							draggable/>
 		</div>
 	);
 };

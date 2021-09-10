@@ -8,6 +8,9 @@ import FavoriteListPage from "./pages/FavoriteListPage";
 import {Container} from "semantic-ui-react";
 import LoginPage from "./pages/LoginPage";
 import ProductPage from "./pages/ProductPage";
+import {ToastContainer} from "react-toastify";
+import React from "react";
+import BlackListPage from "./pages/BlackListPage";
 
 const App = () => {
 	return (
@@ -34,6 +37,9 @@ const App = () => {
 						<Route path="/favorite-list">
 							<FavoriteListPage />
 						</Route>
+						<Route path="/black-list">
+							<BlackListPage />
+						</Route>
 						<Route path="/login">
 							<LoginPage />
 						</Route>
@@ -43,6 +49,13 @@ const App = () => {
 					</Switch>
 				</Container>
 			</BrowserRouter>
+			<ToastContainer position="bottom-right"
+							autoClose={5000}
+							hideProgressBar={false}
+							newestOnTop={false}
+							closeOnClick
+							rtl={false}
+							draggable/>
 		</div>
 	);
 };

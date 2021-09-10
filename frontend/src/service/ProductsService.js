@@ -14,7 +14,7 @@ const ProductService = (function () {
 
 	const _getAllByPage = async (pageNo, pageSize) => {
 		try {
-			const response = await axios.get("/api/product/get-all-by-page", { headers : authHeader(),
+			const response = await axios.get("/api/product/get-all-by-page-without-blacklist", { headers : authHeader(),
 			params : {"page-no" : pageNo,
 				"page-size" : pageSize}});
 
@@ -53,7 +53,28 @@ const ProductService = (function () {
 	const _addToBlackList = async (id) => {
 		try {
 			const response = await axios.get("/api/black-list/add", { headers : authHeader(), params : {"id" : id}});
-			console.log("resp : " + response);
+
+			return response;
+		} catch (error) {
+			console.log("err : " + error);
+
+			return error.response;
+		}
+	};
+
+	const _getFavorites = async () => {
+		try {
+			const response = await axios.get("/api/favorite-list/get-favorites", { headers : authHeader()});
+
+			return response.data;
+		} catch (error) {
+			console.log("err : " + error);
+		}
+	};
+
+	const _removeFromFavorites = async (id) => {
+		try {
+			const response = await axios.get("/api/favorite-list/remove", { headers : authHeader(), params : {"id" : id}});
 
 			return response;
 		} catch (error) {
@@ -68,7 +89,9 @@ const ProductService = (function () {
 		getAllByPage : _getAllByPage,
 		getById : _getById,
 		addToFavorites : _addToFavorites,
-		addToBlackList : _addToBlackList
+		addToBlackList : _addToBlackList,
+		getFavorites : _getFavorites,
+		removeFromFavorites : _removeFromFavorites
 	};
 })();
 

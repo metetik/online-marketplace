@@ -8,6 +8,8 @@ import tr.com.obss.jss.jss_final_project.service.abstracts.FavoriteListService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.ProductService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.UserService;
 
+import java.util.List;
+
 @Service
 public class FavoriteListServiceImpl implements FavoriteListService {
     private final UserService userService;
@@ -21,8 +23,7 @@ public class FavoriteListServiceImpl implements FavoriteListService {
 
     @Override
     public void addToFavoriteList(Integer userId, Integer productId) {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User is not found!"));
+        User user = userService.getById(userId);
 
         Product product = productService.getProductById(productId);
 
@@ -33,5 +34,15 @@ public class FavoriteListServiceImpl implements FavoriteListService {
         } else {
             throw new RuntimeException("seller is already in black list");
         }
+    }
+
+    @Override
+    public List<Product> getProductsByUser(Integer userId) {
+        return productService.getFavoritesByUserId(userId);
+    }
+
+    @Override
+    public void removeFromFavoriteList(Integer userId, Integer productId) {
+        productService.removeProductFromFavorites(userId, productId);
     }
 }

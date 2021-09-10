@@ -3,7 +3,8 @@
 import React, {useEffect, useState} from 'react';
 import ProductsService from "../service/ProductsService";
 import {Link, useHistory} from "react-router-dom";
-import {Button, Card, Container, Grid, Icon, Pagination} from "semantic-ui-react";
+import {Button, Card, Container, Divider, Grid, Icon, Pagination} from "semantic-ui-react";
+import toastify from "../util/ToastifyUtil";
 
 const ProductsPage = () => {
 	const [products, setProducts] = useState([]);
@@ -24,7 +25,8 @@ const ProductsPage = () => {
 	}
 
 	const handleFavoriteList = (productId) => {
-		ProductsService.addToFavorites(productId)
+		ProductsService.addToFavorites(productId);
+		toastify(" ", "Product added to favorites")
 	}
 
 	useEffect( () => {
@@ -38,7 +40,13 @@ const ProductsPage = () => {
 	}
 	return (
 		<div>
+			<span>
 			<h1>Products Page</h1>
+			<div className="ui action input" position="right"><input type="text" placeholder="Search..."/>
+				<button className="ui icon button"><i aria-hidden="true" className="search icon"></i></button>
+			</div>
+			</span>
+			<Divider/>
 			<Grid columns={3}>
 			{!!products && products.map((product) =>(
 						<Grid.Column key={product.id}>

@@ -40,11 +40,18 @@ const NavBar = (props) => {
 				/>
 				}
 				{(user.role === "ROLE_USER") &&
+				<>
 				<Menu.Item
 					name="Favorite List"
 					as={NavLink}
 					to={"/favorite-list"}
 				/>
+				<Menu.Item
+				name="Black List"
+				as={NavLink}
+				to={"/black-list"}
+				/>
+				</>
 				}
 				<Menu.Menu position="right">
 					{!!user.username ?
@@ -61,8 +68,6 @@ const NavBar = (props) => {
 							to={"/login"}
 						/>
 					}
-
-
 				</Menu.Menu>
 			</Container>
 		</Menu>

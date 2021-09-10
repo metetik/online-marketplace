@@ -8,6 +8,8 @@ import tr.com.obss.jss.jss_final_project.service.abstracts.BlackListService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.SellerService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.UserService;
 
+import java.util.List;
+
 @Service
 public class BlackListServiceImpl implements BlackListService {
     private final UserService userService;
@@ -21,8 +23,7 @@ public class BlackListServiceImpl implements BlackListService {
 
     @Override
     public void addToBlackList(Integer userId, Integer sellerId) {
-        User user = userService.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User is not found!"));
+        User user = userService.getById(userId);
 
         Seller seller = sellerService.getSellerById(sellerId);
 
@@ -33,5 +34,15 @@ public class BlackListServiceImpl implements BlackListService {
         } else {
             throw new RuntimeException("seller is already in black list");
         }
+    }
+
+    @Override
+    public List<Seller> getBlackList(Integer userId) {
+        return sellerService.getBlackList(userId);
+    }
+
+    @Override
+    public void removeFromBlackList(Integer userId, Integer sellerId) {
+        sellerService.removeSellerFromBlackList(userId, sellerId);
     }
 }
