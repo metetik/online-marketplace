@@ -1,8 +1,9 @@
 package tr.com.obss.jss.jss_final_project.service.abstracts;
 
-import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import tr.com.obss.jss.jss_final_project.model.Product;
-import tr.com.obss.jss.jss_final_project.model.Seller;
+import tr.com.obss.jss.jss_final_project.payload.request.AddProductRequest;
+import tr.com.obss.jss.jss_final_project.payload.response.MessageResponse;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface ProductService {
     List<Product> getFavoritesByUserId(Integer userId);
 
     void removeProductFromFavorites(Integer userId, Integer productId);
+
+    ResponseEntity<?> addProduct(AddProductRequest addProductRequest);
 }

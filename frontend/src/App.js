@@ -11,6 +11,7 @@ import ProductPage from "./pages/ProductPage";
 import {ToastContainer} from "react-toastify";
 import React from "react";
 import BlackListPage from "./pages/BlackListPage";
+import SellersPage from "./pages/SellersPage";
 
 const App = () => {
 	return (
@@ -33,6 +34,9 @@ const App = () => {
 						</Route>
 						<Route path="/users">
 							<UsersPage />
+						</Route>
+						<Route path="/sellers">
+							<SellersPage />
 						</Route>
 						<Route path="/favorite-list">
 							<FavoriteListPage />

@@ -22,4 +22,9 @@ public class Product {
             CascadeType.REFRESH })
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    public Product(String name, Seller seller) {
+        this.name = name;
+        this.seller = seller;
+    }
 }

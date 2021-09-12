@@ -22,4 +22,8 @@ public class Seller {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private List<Product> products;
+
+    public Seller(String name) {
+        this.name = name;
+    }
 }

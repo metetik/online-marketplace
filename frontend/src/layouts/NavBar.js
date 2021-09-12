@@ -33,11 +33,18 @@ const NavBar = (props) => {
 				/>
 				}
 				{(user.role === "ROLE_ADMIN") &&
-				<Menu.Item
-					name="Users"
+				<>
+					<Menu.Item
+						name="Users"
+						as={NavLink}
+						to={"/users"}
+					/>
+					<Menu.Item
+					name="Sellers"
 					as={NavLink}
-					to={"/users"}
-				/>
+					to={"/sellers"}
+					/>
+				</>
 				}
 				{(user.role === "ROLE_USER") &&
 				<>

@@ -20,4 +20,13 @@ public interface SellerRepository extends JpaRepository<Seller, Integer> {
     @Modifying
     @Query(value = "delete from user_black_list where user_id = :user_id and black_list_id = :seller_id", nativeQuery = true)
     void removeProductFromFavorites(@Param ("user_id") Integer userId, @Param("seller_id") Integer sellerId);
+
+    void deleteById(Integer id);
+
+    Boolean existsByName(String name);
+
+    Seller getByName(String name);
+
+    @Override
+    Seller save(Seller seller);
 }

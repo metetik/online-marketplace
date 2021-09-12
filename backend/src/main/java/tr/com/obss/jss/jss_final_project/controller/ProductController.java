@@ -2,12 +2,15 @@ package tr.com.obss.jss.jss_final_project.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tr.com.obss.jss.jss_final_project.model.Product;
 import tr.com.obss.jss.jss_final_project.model.Seller;
+import tr.com.obss.jss.jss_final_project.payload.request.AddProductRequest;
 import tr.com.obss.jss.jss_final_project.security.UserDetailsImpl;
 import tr.com.obss.jss.jss_final_project.service.abstracts.BlackListService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.ProductService;
@@ -48,5 +51,11 @@ public class ProductController {
     @PreAuthorize("hasRole('USER')")
     public List<Product> getAllByPageWithoutBlackList(@RequestParam("page-no") int pageNo, @RequestParam("page-size") int pageSize) {
         return productService.getAllByPageWithoutBlackList(pageNo,pageSize);
+    }
+
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addProduct(@RequestBody AddProductRequest addProductRequest) {
+        return productService.addProduct(addProductRequest);
     }
 }

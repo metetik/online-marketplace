@@ -38,7 +38,7 @@ const FavoriteListPage = () => {
 
 	return (
 		<div>
-			<h1>Favorite List Page</h1>
+			<h1>Favorite List</h1>
 			<Divider/>
 			<Grid columns={3}>
 				{!!products && products.map((product) =>(

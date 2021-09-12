@@ -2,9 +2,11 @@ import axios from "axios";
 import authHeader from "./authHeader";
 
 const ProductService = (function () {
-	const _getAll = async () => {
+	const _getAllByPage = async (pageNo, pageSize) => {
 		try {
-			const response = await axios.get("/api/product/get-all", { headers : authHeader()});
+			const response = await axios.get("/api/product/get-all-by-page", { headers : authHeader(),
+				params : {"page-no" : pageNo,
+					"page-size" : pageSize}});
 
 			return response.data;
 		} catch (error) {
@@ -12,7 +14,7 @@ const ProductService = (function () {
 		}
 	};
 
-	const _getAllByPage = async (pageNo, pageSize) => {
+	const _getAllByPageWithoutBlackList = async (pageNo, pageSize) => {
 		try {
 			const response = await axios.get("/api/product/get-all-by-page-without-blacklist", { headers : authHeader(),
 			params : {"page-no" : pageNo,
@@ -84,14 +86,27 @@ const ProductService = (function () {
 		}
 	};
 
+	const _addProduct = async (values) => {
+		try {
+			const response = await axios.post("/api/product/add", values, { headers : authHeader()});
+
+			return response;
+		} catch (error) {
+			console.log("err : " + error);
+
+			return error.response;
+		}
+	};
+
 	return {
-		getAll : _getAll,
+		getAllByPageWithoutBlackList : _getAllByPageWithoutBlackList,
 		getAllByPage : _getAllByPage,
 		getById : _getById,
 		addToFavorites : _addToFavorites,
 		addToBlackList : _addToBlackList,
 		getFavorites : _getFavorites,
-		removeFromFavorites : _removeFromFavorites
+		removeFromFavorites : _removeFromFavorites,
+		addProduct : _addProduct
 	};
 })();
 

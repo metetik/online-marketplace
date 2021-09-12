@@ -37,7 +37,7 @@ const BlackListPage = () => {
 
 	return (
 		<div>
-			<h1>Black List Page</h1>
+			<h1>Black List</h1>
 			<Divider/>
 			<List divided verticalAlign='middle'>
 				{!! sellers && sellers.map((seller) =>(

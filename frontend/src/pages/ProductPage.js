@@ -5,10 +5,12 @@ import {Link, useLocation, useParams} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import {Button, Card, Divider, Icon} from "semantic-ui-react";
 import toastify from "../util/ToastifyUtil";
+import AuthService from "../service/AuthService";
 
 const ProductPage = () => {
 	const {id} = useParams();
 	const [product, setProduct] = useState({});
+	const currentUser = AuthService.getCurrentUser();
 
 	const getProduct = (id) => {
 		ProductService.getById(id)
@@ -48,23 +50,26 @@ const ProductPage = () => {
 					<Card.Header>{product.name}</Card.Header>
 					<Card.Meta>{product.seller?.name}</Card.Meta>
 				</Card.Content>
+				{currentUser.roles.includes("ROLE_USER") &&
 				<Card.Content extra>
 					<Button basic compact color='red' size="medium" onClick=
 						{() => handleFavoriteList(id)}>
 						<Icon.Group>
-							<Icon name='heart outline' />
-							<Icon corner name='add' />
+							<Icon name='heart outline'/>
+							<Icon corner name='add'/>
 						</Icon.Group>
 						Add product to favorites
 					</Button>
-					<Button basic compact color="black" size="medium" onClick={() => handleBlackList(product.seller?.id)}>
+					<Button basic compact color="black" size="medium"
+							onClick={() => handleBlackList(product.seller?.id)}>
 						<Icon.Group>
-							<Icon name='ban' />
-							<Icon corner name='add' />
+							<Icon name='ban'/>
+							<Icon corner name='add'/>
 						</Icon.Group>
 						Add seller to black list
 					</Button>
 				</Card.Content>
+				}
 			</Card>
 
 		</div>
