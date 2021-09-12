@@ -51,6 +51,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findAll(int pageNo, int pageSize, String queryWord) {
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+
+        return productRepository.findAllByNameContains(queryWord,pageable).getContent();
+    }
+
+    @Override
     public Product getProductById(Integer id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Error: Product is not found."));
@@ -64,6 +71,18 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNo-1, pageSize);
 
         List<Product> productsWithoutBlackList = productRepository.getProductsWithoutBlackList(userDetails.getId(), pageable);
+
+        return productsWithoutBlackList;
+    }
+
+    @Override
+    public List<Product> getAllByPageWithoutBlackList(int pageNo, int pageSize, String queryWord) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+
+        List<Product> productsWithoutBlackList = productRepository.getProductsWithoutBlackList(userDetails.getId(), queryWord, pageable);
 
         return productsWithoutBlackList;
     }
@@ -91,4 +110,6 @@ public class ProductServiceImpl implements ProductService {
 
         return ResponseEntity.ok("Product added to system!");
     }
+
+
 }

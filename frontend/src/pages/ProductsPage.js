@@ -63,6 +63,11 @@ const ProductsPage = () => {
 			onSubmit : (async (values, actions) => handleSubmit(values, actions))},
 	);
 
+	const formik1 = useFormik(
+		{initialValues : {word : ""},
+			onSubmit : (async (values, actions) => handleSearch(values, actions))},
+	);
+
 	const handleSubmit = (values, actions) => {
 		console.log(values);
 		ProductsService.addProduct(values)
@@ -76,6 +81,32 @@ const ProductsPage = () => {
 				}
 			});
 	}
+
+	const handleSearch = (values, actions) => {
+		if(currentUser.roles.includes("ROLE_ADMIN")){
+			ProductsService.getAllByPageContains(1,pageSize,values)
+				.then((result) => {
+				if (!!result) {
+					setProducts(result);
+				}
+				else {
+					history.push("/login", {authError : true})
+				}
+			});
+		}
+		else if (currentUser.roles.includes("ROLE_USER")){
+			ProductsService.getAllByPageWithoutBlackListContains(1,pageSize,values)
+				.then((result) => {
+					if (!!result) {
+						setProducts(result);
+					}
+					else {
+						history.push("/login", {authError : true})
+					}
+				});
+		}
+	}
+
 	const toggleVisibility = () => {
 		setShowForm((prevState) => (!prevState));
 	}
@@ -88,9 +119,12 @@ const ProductsPage = () => {
 				</GridColumn>
 				<GridColumn></GridColumn>
 				<GridColumn textAlign="right">
-					<div className="ui action input"><input type="text" placeholder="Search..."/>
-						<button className="ui icon button"><i aria-hidden="true" className="search icon"></i></button>
-					</div>
+					<form className="ui action input" onSubmit={formik1.handleSubmit}>
+						<input type="text" name="word" placeholder="Search..." onChange={formik1.handleChange} value={formik1.values.word}/>
+						<button className="ui icon button" type="submit">
+							<i aria-hidden="true" className="search icon"></i>
+						</button>
+					</form>
 				</GridColumn>
 			</Grid>
 			<Divider/>

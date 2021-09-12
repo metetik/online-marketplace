@@ -12,11 +12,15 @@ public interface ProductService {
 
     List<Product> findAll(int pageNo, int pageSize);
 
+    List<Product> findAll(int pageNo, int pageSize, String queryWord);
+
     Product getProductById(Integer id);
 
     // List<Product> getBySellerNotIn(List<Seller> sellers);
 
     List<Product> getAllByPageWithoutBlackList(int pageNo, int pageSize);
+
+    List<Product> getAllByPageWithoutBlackList(int pageNo, int pageSize, String queryWord);
 
     List<Product> getFavoritesByUserId(Integer userId);
 

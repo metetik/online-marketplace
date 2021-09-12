@@ -40,6 +40,13 @@ public class ProductController {
     public List<Product> findAll(@RequestParam("page-no") int pageNo,@RequestParam("page-size") int pageSize) {
         return productService.findAll(pageNo, pageSize);
     }
+    @GetMapping("/get-all-by-page-contains")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public List<Product> findAll(@RequestParam("page-no") int pageNo,
+                                 @RequestParam("page-size") int pageSize,
+                                 @RequestParam("query-word") String queryWord) {
+        return productService.findAll(pageNo, pageSize, queryWord);
+    }
 
     @GetMapping("/get")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -51,6 +58,14 @@ public class ProductController {
     @PreAuthorize("hasRole('USER')")
     public List<Product> getAllByPageWithoutBlackList(@RequestParam("page-no") int pageNo, @RequestParam("page-size") int pageSize) {
         return productService.getAllByPageWithoutBlackList(pageNo,pageSize);
+    }
+
+    @GetMapping("/get-all-by-page-without-blacklist-contains")
+    @PreAuthorize("hasRole('USER')")
+    public List<Product> getAllByPageWithoutBlackList(@RequestParam("page-no") int pageNo,
+                                                      @RequestParam("page-size") int pageSize,
+                                                      @RequestParam("query-word") String queryWord) {
+        return productService.getAllByPageWithoutBlackList(pageNo,pageSize,queryWord);
     }
 
     @PostMapping("/add")

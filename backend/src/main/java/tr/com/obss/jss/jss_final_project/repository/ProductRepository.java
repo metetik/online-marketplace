@@ -19,6 +19,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Override
     List<Product> findAll();
 
+    Page findAllByNameContains(String queryWord, Pageable pageable);
+
     @Override
     Optional<Product> findById(Integer id);
 
@@ -32,6 +34,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             countQuery = "select count(*) from product where seller_id not in (select black_list_id from user_black_list where user_id = :user_id)",
             nativeQuery = true)
     List<Product> getProductsWithoutBlackList(@Param("user_id") Integer userId, Pageable pageable);
+
+    @Query(value = "select * from product where seller_id not in (select black_list_id from user_black_list where user_id = :user_id) and name like %:query_word%",
+            countQuery = "select count(*) from product where seller_id not in (select black_list_id from user_black_list where user_id = :user_id) and like %:query_word%",
+            nativeQuery = true)
+    List<Product> getProductsWithoutBlackList(@Param("user_id") Integer userId, @Param("query_word") String queryWord, Pageable pageable);
 
     @Query(value = "select * from product where id in (select favorite_list_id from user_favorite_list where user_id = :user_id)", nativeQuery = true)
     List<Product> getFavoritesByUserId(@Param("user_id") Integer userId);

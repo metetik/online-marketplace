@@ -14,11 +14,37 @@ const ProductService = (function () {
 		}
 	};
 
+	const _getAllByPageContains = async (pageNo, pageSize, values) => {
+		try {
+			const response = await axios.get("/api/product/get-all-by-page-contains", { headers : authHeader(),
+				params : {"page-no" : pageNo,
+					"page-size" : pageSize,
+					"query-word" : values.word}});
+
+			return response.data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const _getAllByPageWithoutBlackList = async (pageNo, pageSize) => {
 		try {
 			const response = await axios.get("/api/product/get-all-by-page-without-blacklist", { headers : authHeader(),
 			params : {"page-no" : pageNo,
 				"page-size" : pageSize}});
+
+			return response.data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const _getAllByPageWithoutBlackListContains = async (pageNo, pageSize, values) => {
+		try {
+			const response = await axios.get("/api/product/get-all-by-page-without-blacklist-contains", { headers : authHeader(),
+				params : {"page-no" : pageNo,
+					"page-size" : pageSize,
+					"query-word" : values.word}});
 
 			return response.data;
 		} catch (error) {
@@ -106,7 +132,9 @@ const ProductService = (function () {
 		addToBlackList : _addToBlackList,
 		getFavorites : _getFavorites,
 		removeFromFavorites : _removeFromFavorites,
-		addProduct : _addProduct
+		addProduct : _addProduct,
+		getAllByPageContains : _getAllByPageContains,
+		getAllByPageWithoutBlackListContains : _getAllByPageWithoutBlackListContains
 	};
 })();
 
