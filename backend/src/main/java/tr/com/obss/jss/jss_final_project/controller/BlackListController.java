@@ -29,31 +29,19 @@ public class BlackListController {
     @GetMapping("/add")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> addToBlacklist(@RequestParam("id") Integer sellerId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        blackListService.addToBlackList(userDetails.getId(), sellerId);
-
-        return ResponseEntity.ok(new MessageResponse("Product added to black list"));
+        return blackListService.addToBlackList(sellerId);
     }
 
     @GetMapping("/get")
     @PreAuthorize("hasRole('USER')")
     List<Seller> getBlackList() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return blackListService.getBlackList(userDetails.getId());
+        return blackListService.getBlackList();
     }
 
     @GetMapping("/remove")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<?> removeFromBlackList(@RequestParam("id") Integer sellerId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        blackListService.removeFromBlackList(userDetails.getId(), sellerId);
-
-        return ResponseEntity.ok(new MessageResponse("Seller removed from black list"));
+        return blackListService.removeFromBlackList(sellerId);
     }
 }

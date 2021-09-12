@@ -2,33 +2,24 @@ import React, {useEffect, useState} from 'react';
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {useHistory, useLocation} from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
 import AuthService from "../service/AuthService";
 import {setUser} from "../store/actions/userActions";
 import {useDispatch} from "react-redux";
 import {Message} from "semantic-ui-react";
 import toastify from "../util/ToastifyUtil";
+import {StatusCodes} from "http-status-codes";
 
 const LoginPage = () => {
 	const [authError, setAuthError] = useState(false);
-	const initialValues = {username : "", password : ""}
+	const initialValues = {username : "", password : ""};
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const history = useHistory();
 
 	const schema = Yup.object({
 		username : Yup.string().required("No username provided."),
-		password : Yup.string()
-			.required('No password provided.')
-			// .min(8, 'Password is too short - should be 8 chars minimum.')
-
+		password : Yup.string().required("No password provided.")
 	})
-
-	const notify = (success) => {
-		success ?
-		toastify("success", "Login is Successful!")
-		: toastify("error", "Login Failed!");
-	}
 
 	const sleep = (milliseconds) => {
 		return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -36,12 +27,12 @@ const LoginPage = () => {
 
 	const handleSubmit = async (values, actions) => {
 		actions.resetForm();
-
 		const response = await AuthService.signin(values);
 
-		if (response) {
-			notify(true);
+		if (response.status === StatusCodes.OK) {
+			toastify("success", "Login is Successful!");
 			const currentUser = AuthService.getCurrentUser();
+
 			const userObject = {username : currentUser.username,
 				role : currentUser.roles[0]};
 
@@ -49,10 +40,11 @@ const LoginPage = () => {
 				dispatch(setUser(userObject));
 			}
 			await sleep(1500);
+
 			history.push("/");
 		}
 		else {
-			notify(false);
+			toastify("error", "Login failed!");
 		}
 	}
 
@@ -67,6 +59,10 @@ const LoginPage = () => {
 
 		if (location.state){
 			setAuthError(location.state);
+		}
+
+		return () => {
+			setAuthError(false);
 		}
 	}, [])
 

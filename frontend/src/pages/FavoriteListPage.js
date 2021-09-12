@@ -4,6 +4,7 @@ import ProductsService from "../service/ProductsService";
 import {Link, useHistory} from "react-router-dom";
 import toastify from "../util/ToastifyUtil";
 import {Button, Card, Divider, Grid, Icon} from "semantic-ui-react";
+import {StatusCodes} from "http-status-codes";
 
 const FavoriteListPage = () => {
 	const [products, setProducts] = useState([]);
@@ -12,12 +13,15 @@ const FavoriteListPage = () => {
 
 	const getProducts = () => {
 		ProductsService.getFavorites()
-			.then((result) => {
-				if (!!result) {
-					setProducts(result);
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setProducts(response.data);
+				}
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true})
 				}
 				else {
-					history.push("/login", {authError : true})
+					toastify("error", "error");
 				}
 			});
 	}
@@ -28,10 +32,18 @@ const FavoriteListPage = () => {
 	},[flag]);
 
 	const handleRemoveFromFavoriteList = (productId) => {
-		ProductsService.removeFromFavorites(productId).then((result) => {
-			toastify(" ", "Product removed from favorites");
-			setFlag(prevState => (!prevState));
-			console.log(result);
+		ProductsService.removeFromFavorites(productId).then((response) => {
+			if (response && response.status === StatusCodes.OK) {
+				toastify(" ", "Product removed from favorites");
+				setFlag(prevState => (!prevState));
+			}
+			else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+				history.push("/login", {authError : true})
+			}
+			else {
+				toastify("error", "error");
+			}
+
 		});
 
 	}

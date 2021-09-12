@@ -16,11 +16,11 @@ const SellersPage = () => {
 
 	const getSellers = () => {
 		SellerService.getAll()
-			.then((result) => {
-				if (!!result) {
-					setSellers(result);
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setSellers(response.data);
 				}
-				else {
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
 					history.push("/login", {authError : true})
 				}
 			});
@@ -28,6 +28,7 @@ const SellersPage = () => {
 
 	useEffect(() => {
 		getSellers();
+
 		window.scrollTo(0, 0);
 	}, [showForm, flag]);
 
@@ -40,11 +41,14 @@ const SellersPage = () => {
 		SellerService.addSeller(values)
 			.then((response) => {
 				actions.resetForm();
-				if(response.status === StatusCodes.OK) {
-					console.log(response);
+				if(response && response.status === StatusCodes.OK) {
 					toastify("success", response.data);
 					setFlag(prevState => (!prevState));
-				} else {
+				}
+				else if (response && response.status === StatusCodes.OK){
+					history.push("/login", {authError : true});
+				}
+				else {
 					toastify("error", "Seller couldn't be added to system");
 				}
 			});
@@ -59,7 +63,7 @@ const SellersPage = () => {
 				setFlag(prevState => (!prevState));
 			}
 			else {
-				toastify("error", "User couldn't be removed");
+				toastify("error", "Seller couldn't be removed");
 			}
 		});
 	}

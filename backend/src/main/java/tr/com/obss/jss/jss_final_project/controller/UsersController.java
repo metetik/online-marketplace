@@ -25,14 +25,10 @@ import java.util.Set;
 @RequestMapping("/api/users")
 public class UsersController {
     private final UserService userService;
-    private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsersController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UsersController(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/get-all")
@@ -52,47 +48,6 @@ public class UsersController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> add(@Valid @RequestBody SignupRequest signupRequest) {
-        //TODO: Bunu ve auth controller'dakini user service'e al
-        if (userService.existsByUsername(signupRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
-
-        // Create new user's account
-        User user = new User(signupRequest.getUsername(),
-                passwordEncoder.encode(signupRequest.getPassword()));
-
-        Set<String> strRoles = signupRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleService.findByName(EnumRole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        }
-        else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "ADMIN":
-                        Role adminRole = roleService.findByName(EnumRole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "USER":
-                        Role userRole = roleService.findByName(EnumRole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-
-                        break;
-                }
-            });
-        }
-
-        user.setRoles(roles);
-        userService.save(user);
-
-        return ResponseEntity.ok("User added to system");
+        return userService.add(signupRequest);
     }
 }

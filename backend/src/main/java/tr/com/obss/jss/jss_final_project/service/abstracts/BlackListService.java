@@ -1,13 +1,14 @@
 package tr.com.obss.jss.jss_final_project.service.abstracts;
 
+import org.springframework.http.ResponseEntity;
 import tr.com.obss.jss.jss_final_project.model.Seller;
 
 import java.util.List;
 
 public interface BlackListService {
-    void addToBlackList(Integer userId, Integer productId);
+    ResponseEntity<?> addToBlackList(Integer sellerId);
 
-    List<Seller> getBlackList(Integer userId);
+    List<Seller> getBlackList();
 
-    void removeFromBlackList(Integer userId, Integer sellerId);
+    ResponseEntity<?> removeFromBlackList(Integer sellerId);
 }

@@ -20,6 +20,7 @@ import tr.com.obss.jss.jss_final_project.payload.response.JwtResponse;
 import tr.com.obss.jss.jss_final_project.security.JwtUtils;
 import tr.com.obss.jss.jss_final_project.security.UserDetailsImpl;
 import tr.com.obss.jss.jss_final_project.payload.response.MessageResponse;
+import tr.com.obss.jss.jss_final_project.service.abstracts.AuthService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.RoleService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.UserService;
 
@@ -38,77 +39,26 @@ public class AuthController {
     private RoleService roleService;
     private PasswordEncoder passwordEncoder;
     private JwtUtils jwtUtils;
+    private final AuthService authService;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UserService userService,
-                          RoleService roleService, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+                          RoleService roleService, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, AuthService authService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String token = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new JwtResponse(token, userDetails.getId(), userDetails.getUsername(), roles));
+        return authService.authenticateUser(loginRequest);
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
-        if (userService.existsByUsername(signupRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
-
-        // Create new user's account
-        User user = new User(signupRequest.getUsername(),
-                passwordEncoder.encode(signupRequest.getPassword()));
-
-        Set<String> strRoles = signupRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleService.findByName(EnumRole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        }
-        else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "ADMIN":
-                        Role adminRole = roleService.findByName(EnumRole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "USER":
-                        Role userRole = roleService.findByName(EnumRole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-
-                        break;
-                }
-            });
-        }
-
-        user.setRoles(roles);
-        userService.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return authService.registerUser(signupRequest);
     }
 }

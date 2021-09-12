@@ -6,7 +6,7 @@ const UsersService = (function () {
 		try {
 			const response = await axios.get("/api/users/get-all", { headers : authHeader()});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -17,7 +17,7 @@ const UsersService = (function () {
 
 			return response;
 		} catch (error) {
-			return error.response;
+			return error;
 		}
 	};
 
@@ -29,7 +29,7 @@ const UsersService = (function () {
 		} catch (error) {
 			console.log("err : " + error);
 
-			return error.response;
+			return error;
 		}
 	};
 

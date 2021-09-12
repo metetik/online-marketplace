@@ -20,33 +20,52 @@ const ProductsPage = () => {
 	const currentUser = AuthService.getCurrentUser();
 
 	const getProducts = (pageNo, pageSize) => {
-		if(currentUser.roles.includes("ROLE_ADMIN")){
-			ProductsService.getAllByPage(pageNo,pageSize).then((result) => {
-				if (!!result) {
-					setProducts(result);
+		if(currentUser.roles.includes("ROLE_ADMIN")) {
+			ProductsService.getAllByPage(pageNo,pageSize).then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setProducts(response.data);
 				}
-				else {
-					history.push("/login", {authError : true})
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true});
 				}
 			});
 		}
-		else if (currentUser.roles.includes("ROLE_USER")){
+		else if (currentUser.roles.includes("ROLE_USER")) {
 			ProductsService.getAllByPageWithoutBlackList(pageNo,pageSize)
-				.then((result) => {
-					if (!!result) {
-						setProducts(result);
+				.then((response) => {
+					if (response && response.status === StatusCodes.OK) {
+						setProducts(response.data);
 					}
-					else {
-						history.push("/login", {authError : true})
+					else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+						history.push("/login", {authError : true});
 					}
 				});
 		}
 	}
 
 	const handleFavoriteList = (productId) => {
-		ProductsService.addToFavorites(productId);
-		toastify(" ", "Product added to favorites")
+		ProductsService.addToFavorites(productId).then((response) => {
+			if (response && response.status === StatusCodes.OK) {
+				toastify(" ", "Product added to favorites");
+			}
+			else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+				history.push("/login", {authError : true});
+			}
+		});
 	}
+
+	const handleRemove = (productId) => {
+		ProductsService.removeProduct(productId).then((response) => {
+			if (response && response.status === StatusCodes.OK) {
+				toastify(" ", "Product removed from system");
+				setFlag(prevState => (!prevState));
+			}
+			else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+				history.push("/login", {authError : true});
+			}
+		});
+	}
+
 
 	useEffect( () => {
 		getProducts(activePage,pageSize)
@@ -69,14 +88,17 @@ const ProductsPage = () => {
 	);
 
 	const handleSubmit = (values, actions) => {
-		console.log(values);
 		ProductsService.addProduct(values)
 			.then((response) => {
 				actions.resetForm();
-				if(response.status === StatusCodes.OK) {
+				if (response.status === StatusCodes.OK) {
 					toastify("success", response.data);
 					setFlag(prevState => (!prevState));
-				} else {
+				}
+				else if(response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true});
+				}
+				else {
 					toastify("error", "Product couldn't be added to system");
 				}
 			});
@@ -85,22 +107,22 @@ const ProductsPage = () => {
 	const handleSearch = (values, actions) => {
 		if(currentUser.roles.includes("ROLE_ADMIN")){
 			ProductsService.getAllByPageContains(1,pageSize,values)
-				.then((result) => {
-				if (!!result) {
-					setProducts(result);
+				.then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setProducts(response.data);
 				}
-				else {
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
 					history.push("/login", {authError : true})
 				}
 			});
 		}
 		else if (currentUser.roles.includes("ROLE_USER")){
 			ProductsService.getAllByPageWithoutBlackListContains(1,pageSize,values)
-				.then((result) => {
-					if (!!result) {
-						setProducts(result);
+				.then((response) => {
+					if (response && response.status === StatusCodes.OK) {
+						setProducts(response.data);
 					}
-					else {
+					else if (response && response.status === StatusCodes.UNAUTHORIZED) {
 						history.push("/login", {authError : true})
 					}
 				});
@@ -117,12 +139,12 @@ const ProductsPage = () => {
 				<GridColumn>
 					<h1>Products</h1>
 				</GridColumn>
-				<GridColumn></GridColumn>
+				<GridColumn/>
 				<GridColumn textAlign="right">
 					<form className="ui action input" onSubmit={formik1.handleSubmit}>
 						<input type="text" name="word" placeholder="Search..." onChange={formik1.handleChange} value={formik1.values.word}/>
 						<button className="ui icon button" type="submit">
-							<i aria-hidden="true" className="search icon"></i>
+							<i aria-hidden="true" className="search icon"/>
 						</button>
 					</form>
 				</GridColumn>
@@ -146,7 +168,7 @@ const ProductsPage = () => {
 									Add to favorites
 								</Button>
 								:
-								<Button basic compact color='red' onClick={() => handleFavoriteList(product.id)}>
+								<Button basic compact color='red' onClick={() => handleRemove(product.id)}>
 									<Icon name="trash alternate outline" />
 									Remove product
 								</Button>

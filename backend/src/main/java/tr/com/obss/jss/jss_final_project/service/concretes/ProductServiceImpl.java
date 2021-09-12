@@ -111,5 +111,10 @@ public class ProductServiceImpl implements ProductService {
         return ResponseEntity.ok("Product added to system!");
     }
 
+    @Override
+    public ResponseEntity<?> removeProduct(Integer productId) {
+        productRepository.deleteById(productId);
 
+        return ResponseEntity.ok("Product removed from system!");
+    }
 }

@@ -6,7 +6,7 @@ const SellerService = (function () {
 		try {
 			const response = await axios.get("/api/seller/get-all", { headers : authHeader()});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -40,7 +40,7 @@ const SellerService = (function () {
 		try {
 			const response = await axios.get("/api/black-list/get", { headers : authHeader()});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -53,7 +53,7 @@ const SellerService = (function () {
 		} catch (error) {
 			console.log("err : " + error);
 
-			return error.response;
+			return error;
 		}
 	};
 

@@ -8,7 +8,7 @@ const ProductService = (function () {
 				params : {"page-no" : pageNo,
 					"page-size" : pageSize}});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -21,7 +21,7 @@ const ProductService = (function () {
 					"page-size" : pageSize,
 					"query-word" : values.word}});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -33,7 +33,7 @@ const ProductService = (function () {
 			params : {"page-no" : pageNo,
 				"page-size" : pageSize}});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -46,7 +46,7 @@ const ProductService = (function () {
 					"page-size" : pageSize,
 					"query-word" : values.word}});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log(error);
 		}
@@ -55,26 +55,22 @@ const ProductService = (function () {
 	const _getById = async (id) => {
 		try {
 			const response = await axios.get("/api/product/get", { headers : authHeader(), params : {"id" : id}});
-			console.log("resp : " + response);
 
 			return response;
 		} catch (error) {
-			console.log("err : " + error);
-
-			return error.response;
+			return error;
 		}
 	};
 
 	const _addToFavorites = async (id) => {
 		try {
 			const response = await axios.get("/api/favorite-list/add", { headers : authHeader(), params : {"id" : id}});
-			console.log("resp : " + response);
 
 			return response;
 		} catch (error) {
 			console.log("err : " + error);
 
-			return error.response;
+			return error;
 		}
 	};
 
@@ -84,9 +80,8 @@ const ProductService = (function () {
 
 			return response;
 		} catch (error) {
-			console.log("err : " + error);
 
-			return error.response;
+			return error;
 		}
 	};
 
@@ -94,7 +89,7 @@ const ProductService = (function () {
 		try {
 			const response = await axios.get("/api/favorite-list/get-favorites", { headers : authHeader()});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			console.log("err : " + error);
 		}
@@ -108,9 +103,22 @@ const ProductService = (function () {
 		} catch (error) {
 			console.log("err : " + error);
 
-			return error.response;
+			return error;
 		}
 	};
+
+	const _removeProduct = async (id) => {
+		try {
+			const response = await axios.get("/api/product/remove", { headers : authHeader(), params : {"id" : id}});
+
+			return response;
+		} catch (error) {
+			console.log("err : " + error);
+
+			return error;
+		}
+	};
+
 
 	const _addProduct = async (values) => {
 		try {
@@ -120,7 +128,7 @@ const ProductService = (function () {
 		} catch (error) {
 			console.log("err : " + error);
 
-			return error.response;
+			return error;
 		}
 	};
 
@@ -132,6 +140,7 @@ const ProductService = (function () {
 		addToBlackList : _addToBlackList,
 		getFavorites : _getFavorites,
 		removeFromFavorites : _removeFromFavorites,
+		removeProduct : _removeProduct,
 		addProduct : _addProduct,
 		getAllByPageContains : _getAllByPageContains,
 		getAllByPageWithoutBlackListContains : _getAllByPageWithoutBlackListContains

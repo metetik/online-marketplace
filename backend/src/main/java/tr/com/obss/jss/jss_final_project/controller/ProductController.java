@@ -73,4 +73,10 @@ public class ProductController {
     public ResponseEntity<?> addProduct(@RequestBody AddProductRequest addProductRequest) {
         return productService.addProduct(addProductRequest);
     }
+
+    @GetMapping("/remove")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> removeProduct(@RequestParam("id") Integer productId) {
+        return productService.removeProduct(productId);
+    }
 }

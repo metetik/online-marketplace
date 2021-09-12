@@ -9,9 +9,11 @@ const AuthService = (function () {
                 localStorage.setItem("user", JSON.stringify(response.data))
             }
 
-            return response.data;
+            return response;
         } catch (error) {
             console.log(error);
+
+            return error;
         }
     };
 

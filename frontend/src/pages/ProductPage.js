@@ -1,42 +1,85 @@
 // Admin or user can see others redirects to login
 import React, {useEffect, useState} from 'react';
 import ProductService from "../service/ProductsService";
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, useHistory, useLocation, useParams} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import {Button, Card, Divider, Icon} from "semantic-ui-react";
 import toastify from "../util/ToastifyUtil";
 import AuthService from "../service/AuthService";
+import ProductsService from "../service/ProductsService";
 
 const ProductPage = () => {
 	const {id} = useParams();
 	const [product, setProduct] = useState({});
-	const currentUser = AuthService.getCurrentUser();
+	const [currentUser, setCurrentUser] = useState({name : "", roles : []});
+	const history = useHistory();
+
+	const sleep = (milliseconds) => {
+		return new Promise(resolve => setTimeout(resolve, milliseconds))
+	}
 
 	const getProduct = (id) => {
 		ProductService.getById(id)
-			.then((result) => {
-				if (result.status === StatusCodes.OK) {
-					setProduct(result.data)
-					console.log(StatusCodes.OK);
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setProduct(response.data)
 				}
-				else if (result.status === StatusCodes.NOT_FOUND){
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true});
+				}
+				else if (response && response.status === StatusCodes.NOT_FOUND){
 					console.log(StatusCodes.NOT_FOUND);
 				}
 			})
 	}
 
 	const handleBlackList = (sellerId) => {
-		ProductService.addToBlackList(sellerId);
-		toastify(" ", "Seller added to black list")
+		ProductService.addToBlackList(sellerId)
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK){
+					toastify(" ", "Seller added to black list");
+				}
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true});
+				}
+				else {
+					toastify("error", "error");
+				}
+			});
+
 	}
 
 	const handleFavoriteList = (productId) => {
-		ProductService.addToFavorites(productId);
-		toastify(" ", "Product added to favorites")
+		ProductService.addToFavorites(productId)
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK){
+					toastify(" ", "Product added to favorites");
+				}
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true});
+				}
+				else {
+					toastify("error", "error");
+				}
+			});
+	}
+	const handleRemove = async (productId) => {
+		const response = await ProductsService.removeProduct(productId);
+
+		if (response && response.status === StatusCodes.OK) {
+			toastify(" ", "Product removed from system");
+			await sleep(1500);
+			history.push("/products");
+		}
+		else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+			history.push("/login", {authError : true});
+		}
 	}
 
 	useEffect(() => {
 		getProduct(id);
+
+		setCurrentUser(AuthService.getCurrentUser());
 
 		window.scrollTo(0, 0);
 	},[]);
@@ -67,6 +110,14 @@ const ProductPage = () => {
 							<Icon corner name='add'/>
 						</Icon.Group>
 						Add seller to black list
+					</Button>
+				</Card.Content>
+				}
+				{currentUser.roles.includes("ROLE_ADMIN") &&
+				<Card.Content extra>
+					<Button basic compact color='red' onClick={() => handleRemove(product.id)}>
+						<Icon name="trash alternate outline" />
+						Remove product
 					</Button>
 				</Card.Content>
 				}

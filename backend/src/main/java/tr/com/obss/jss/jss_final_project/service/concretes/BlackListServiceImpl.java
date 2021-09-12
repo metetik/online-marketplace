@@ -1,9 +1,14 @@
 package tr.com.obss.jss.jss_final_project.service.concretes;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tr.com.obss.jss.jss_final_project.model.Seller;
 import tr.com.obss.jss.jss_final_project.model.User;
+import tr.com.obss.jss.jss_final_project.payload.response.MessageResponse;
+import tr.com.obss.jss.jss_final_project.security.UserDetailsImpl;
 import tr.com.obss.jss.jss_final_project.service.abstracts.BlackListService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.SellerService;
 import tr.com.obss.jss.jss_final_project.service.abstracts.UserService;
@@ -22,8 +27,11 @@ public class BlackListServiceImpl implements BlackListService {
     }
 
     @Override
-    public void addToBlackList(Integer userId, Integer sellerId) {
-        User user = userService.getById(userId);
+    public ResponseEntity<?> addToBlackList(Integer sellerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        User user = userService.getById(userDetails.getId());
 
         Seller seller = sellerService.getSellerById(sellerId);
 
@@ -34,15 +42,25 @@ public class BlackListServiceImpl implements BlackListService {
         } else {
             throw new RuntimeException("seller is already in black list");
         }
+
+        return ResponseEntity.ok(new MessageResponse("Product added to black list"));
     }
 
     @Override
-    public List<Seller> getBlackList(Integer userId) {
-        return sellerService.getBlackList(userId);
+    public List<Seller> getBlackList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        return sellerService.getBlackList(userDetails.getId());
     }
 
     @Override
-    public void removeFromBlackList(Integer userId, Integer sellerId) {
-        sellerService.removeSellerFromBlackList(userId, sellerId);
+    public ResponseEntity<?> removeFromBlackList(Integer sellerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        sellerService.removeSellerFromBlackList(userDetails.getId(), sellerId);
+
+        return ResponseEntity.ok(new MessageResponse("Seller removed from black list"));
     }
 }

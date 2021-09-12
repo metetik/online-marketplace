@@ -18,17 +18,16 @@ const UsersPage = () => {
 
 	const getUsers = () => {
 		UsersService.getAll()
-			.then((result) => {
-				if (!!result) {
-					setUsers(result);
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setUsers(response.data);
 				}
-				else {
-					history.push("/login", {authError : true})
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+					history.push("/login", {authError : true});
 				}
 			})
 			.catch(reason => {
 				console.log(reason);
-				history.push("/login", {authError : true})
 			});
 	}
 
@@ -58,19 +57,24 @@ const UsersPage = () => {
 							 "role" : [values.role]}
 
 		const response = await AuthService.signup(credentials);
-		if(response) {
+		if((response && response.status === StatusCodes.OK)) {
 			toastify("success", "User is added to system");
 			setFlag(prevState => (!prevState));
+		} else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+			history.push("/login", {authError : true});
 		} else {
 			toastify("error", "User couldnt be added to system");
 		}
 	}
 
 	const handleRemoveUser = (userId) => {
-		UsersService.removeUser(userId).then((result) => {
-			if (result.status === StatusCodes.OK) {
+		UsersService.removeUser(userId).then((response) => {
+			if (response.status === StatusCodes.OK) {
 				toastify("success", "User is removed");
 				setFlag(prevState => (!prevState));
+			}
+			else if (response && response.status === StatusCodes.UNAUTHORIZED) {
+				history.push("/login", {authError : true});
 			}
 			else {
 				toastify("error", "User couldn't be removed");

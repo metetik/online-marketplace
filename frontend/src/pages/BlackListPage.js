@@ -4,6 +4,7 @@ import {useHistory} from "react-router-dom";
 import toastify from "../util/ToastifyUtil";
 import SellerService from "../service/SellerService";
 import {Button, Divider, Image, List} from "semantic-ui-react";
+import {StatusCodes} from "http-status-codes";
 
 const BlackListPage = () => {
 	const [sellers, setSellers] = useState([]);
@@ -12,11 +13,11 @@ const BlackListPage = () => {
 
 	const getSellers = () => {
 		SellerService.getBlackList()
-			.then((result) => {
-				if (!!result) {
-					setSellers(result);
+			.then((response) => {
+				if (response && response.status === StatusCodes.OK) {
+					setSellers(response.data);
 				}
-				else {
+				else if (response && response.status === StatusCodes.UNAUTHORIZED) {
 					history.push("/login", {authError : true})
 				}
 			});

@@ -27,4 +27,6 @@ public interface ProductService {
     void removeProductFromFavorites(Integer userId, Integer productId);
 
     ResponseEntity<?> addProduct(AddProductRequest addProductRequest);
+
+    ResponseEntity<?> removeProduct(Integer productId);
 }
