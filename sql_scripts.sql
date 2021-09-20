@@ -1,4 +1,78 @@
+create schema online_marketplace;
+
 use online_marketplace;
+
+drop table if exists `product`;
+drop table if exists `role`;
+drop table if exists `seller`;
+drop table if exists `user`;
+drop table if exists `user_black_list`;
+drop table if exists `user_favorite_list`;
+drop table if exists `user_roles`;
+
+create table `product` (
+	`id` integer not null auto_increment,
+	`name` varchar(255),
+	`seller_id` integer,
+	primary key (`id`)
+) engine=InnoDB;
+create table `role` (
+	`id` integer not null auto_increment,
+	`name` varchar(255),
+	primary key (`id`)
+) engine=InnoDB;
+create table `seller` (
+	`id` integer not null auto_increment,
+	`name` varchar(255),
+	primary key (`id`)
+) engine=InnoDB;
+create table `user` (
+	`id` integer not null auto_increment,
+	`password` varchar(120),
+	`username` varchar(20),
+	primary key (`id`)
+) engine=InnoDB;
+create table `user_black_list` (
+	`user_id` integer not null,
+	`black_list_id` integer not null
+) engine=InnoDB;
+create table `user_favorite_list` (
+	`user_id` integer not null,
+	`favorite_list_id` integer not null
+) engine=InnoDB;
+create table `user_roles` (
+	`user_id` integer not null,
+	`role_id` integer not null,
+	primary key (`user_id`, `role_id`)
+) engine=InnoDB;
+alter table `product`
+	add constraint `FK608brpktjy9oai14lh34qqmj8`
+	foreign key (`seller_id`)
+	references `seller` (`id`);
+alter table `user_black_list`
+	add constraint `FKdqso0lmsynmgc8ovbt3b3x1ie`
+	foreign key (`black_list_id`)
+	references `seller` (`id`);
+alter table `user_black_list`
+	add constraint `FKd1asbjfwepng4e09xs1rlvqdo`
+	foreign key (`user_id`)
+	references `user` (`id`);
+alter table `user_favorite_list`
+	add constraint `FKlqxe7t2uw03r8ys9h5fyqeuhd`
+	foreign key (`favorite_list_id`)
+	references `product` (`id`);
+alter table `user_favorite_list`
+	add constraint `FKc2aihw3hf385dom73mm9wyd06`
+	foreign key (`user_id`)
+	references `user` (`id`);
+alter table `user_roles`
+	add constraint `FKlhhbknkqrbbja7jt6ao2vluhx`
+	foreign key (`role_id`)
+	references `role` (`id`);
+alter table `user_roles`
+	add constraint `FK40cm955hgg5oxf1oax8mqw0c4`
+	foreign key (`user_id`)
+	references `user` (`id`);
 
 insert into role(name) values ('ROLE_USER');
 insert into role(name) values ('ROLE_ADMIN');
