@@ -18,18 +18,22 @@ This is an example project which i made during my java summer school internship 
 2. Create database
 	1. Open mysql console
 	2. Copy-paste sql_spripts.sql
-3. Run backend
+3. Configure ./backend/src/main/resources/application.yml
+4. Run backend
+
 	`cd backend`
-	`mvn spring_boot:run`
-4. Run frontend
+
+	`mvn spring-boot:run`
+5. Run frontend
+
 	`cd frontend`
+
 	`npm install`
+
 	`npm start`
 
 ### Default user credentials
 * admin : admin
 * user : pass
-  
-### Video
 
 
